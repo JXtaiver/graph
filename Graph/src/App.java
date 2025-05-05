@@ -35,11 +35,14 @@ public class App {
     }
 
     private static void createGraph() {
-        System.out.print("Enter vertices (e.g., v1 v2 v3): ");
+        System.out.print("Do you want to create a weighted graph? (yes/no): ");
+        boolean isWeighted = scan.nextLine().trim().equalsIgnoreCase("yes");
+    
+        System.out.print("Enter vertices (e.g., A B C): ");
         String[] vertices = scan.nextLine().trim().split("\\s+");
         int n = vertices.length;
     
-        Graph g = new Graph(n);
+        Graph g = new Graph(n, isWeighted);
         Map<String, Integer> vertexIndexMap = new HashMap<>();
     
         for (int i = 0; i < n; i++) {
@@ -63,21 +66,48 @@ public class App {
             }
         }
     
+        //  This is the part where you insert the updated edge input logic
         for (int i = 0; i < edgeCount; i++) {
             while (true) {
-                System.out.print("Enter edge " + (i + 1) + " (e.g., v1 v2): ");
+                if (isWeighted) {
+                    System.out.print("Enter edge " + (i + 1) + " in the format: vertex1 vertex2 weight (e.g., A B 5): ");
+                } else {
+                    System.out.print("Enter edge " + (i + 1) + " in the format: vertex1 vertex2 (e.g., A B): ");
+                }
+    
                 String[] edge = scan.nextLine().trim().split("\\s+");
     
-                if (edge.length != 2 || 
-                    !vertexIndexMap.containsKey(edge[0]) || 
-                    !vertexIndexMap.containsKey(edge[1])) {
-                    System.out.println("Invalid edge. Make sure both vertices exist. Try again.");
+                if ((isWeighted && edge.length != 3) || (!isWeighted && edge.length != 2)) {
+                    System.out.println("Invalid format. " + (isWeighted ? "Expected: vertex1 vertex2 weight" : "Expected: vertex1 vertex2"));
                     continue;
                 }
     
-                int u = vertexIndexMap.get(edge[0]);
-                int v = vertexIndexMap.get(edge[1]);
-                g.addEdge(u, v);
+                String uStr = edge[0];
+                String vStr = edge[1];
+    
+                if (!vertexIndexMap.containsKey(uStr) || !vertexIndexMap.containsKey(vStr)) {
+                    System.out.println("One or both vertices not found. Please make sure both vertices exist.");
+                    continue;
+                }
+    
+                int u = vertexIndexMap.get(uStr);
+                int v = vertexIndexMap.get(vStr);
+                int weight = 1;
+    
+                if (isWeighted) {
+                    try {
+                        weight = Integer.parseInt(edge[2]);
+                        if (weight <= 0) {
+                            System.out.println("Weight must be a positive integer.");
+                            continue;
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Weight must be a valid integer.");
+                        continue;
+                    }
+                }
+    
+                g.addEdge(u, v, weight);
                 break;
             }
         }
@@ -86,8 +116,6 @@ public class App {
         System.out.println("Graph created and saved as graph #" + (graphs.size() - 1));
     }
     
-    
-
     private static void viewAllGraphs() {
         if (graphs.isEmpty()) {
             System.out.println("No graphs have been created yet.");
@@ -123,9 +151,7 @@ public class App {
             System.out.println("3. Degree Sequence");
             System.out.println("4. Euler Characteristic");
             System.out.println("5. Power Set with n-simplex");
-            System.out.println("6. Incidence Check");
-            System.out.println("7. Isomorphism with Another Graph");
-            System.out.println("8. Back to Main Menu");
+            System.out.println("6. Back to Main Menu");
             System.out.print("Choose an operation: ");
             String op = scan.nextLine();
 
@@ -145,30 +171,9 @@ public class App {
                     g.euler();
                     break;
                 case "5":
-                    Set<String> vertexSet = new HashSet<>(Arrays.asList(g.getVertexData()));
-                    List<Set<String>> power = g.powerSet(vertexSet);
-                    for (Set<String> s : power) {
-                        System.out.println(s + " - n-simplex: " + (s.size() - 1));
-                    }
+                    System.out.println("No operations for Power Set in this version.");
                     break;
                 case "6":
-                    System.out.print("Enter Set A (e.g., v1 v2): ");
-                    Set<String> setA = new HashSet<>(Arrays.asList(scan.nextLine().split(" ")));
-                    System.out.print("Enter Set B (e.g., v1 v2 v3): ");
-                    Set<String> setB = new HashSet<>(Arrays.asList(scan.nextLine().split(" ")));
-                    System.out.println("Set A ⊆ Set B? " + g.incidence(setA, setB));
-                    break;
-                case "7":
-                    System.out.print("Enter graph number to compare with (0 to " + (graphs.size() - 1) + "): ");
-                    int other = Integer.parseInt(scan.nextLine());
-                    if (other == index || other < 0 || other >= graphs.size()) {
-                        System.out.println("Invalid comparison graph.");
-                        break;
-                    }
-                    boolean isomorphic = g.isIsomorphic(graphs.get(other));
-                    System.out.println("Isomorphic? " + isomorphic);
-                    break;
-                case "8":
                     return;
                 default:
                     System.out.println("Invalid option.");
