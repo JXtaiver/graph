@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.*;
 
 class Graph {
@@ -66,5 +65,65 @@ class Graph {
         dfsUtil(startVertex, visited);
         System.out.println();
     }
-}
 
+    // 1. Incidence method
+    public boolean incidence(Set<String> setA, Set<String> setB) {
+        return setB.containsAll(setA);
+    }
+
+    // 2. Degree method
+    public int[] degree() {
+        int[] degrees = new int[size];
+        for (int i = 0; i < size; i++) {
+            int count = 0;
+            for (int j = 0; j < size; j++) {
+                count += adjMatrix[i][j];
+            }
+            degrees[i] = count;
+        }
+        return degrees;
+    }
+
+    // 3. Isomorphism method
+    public boolean isIsomorphic(Graph other) {
+        if (this.size != other.size) return false;
+        int[] thisDeg = this.degree();
+        int[] otherDeg = other.degree();
+        Arrays.sort(thisDeg);
+        Arrays.sort(otherDeg);
+        return Arrays.equals(thisDeg, otherDeg);
+    }
+
+    // 4. Power Set method
+    public List<Set<String>> powerSet(Set<String> originalSet) {
+        List<Set<String>> subsets = new ArrayList<>();
+        List<String> list = new ArrayList<>(originalSet);
+        int n = list.size();
+        for (int i = 0; i < (1 << n); i++) {
+            Set<String> subset = new HashSet<>();
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) != 0) {
+                    subset.add(list.get(j));
+                }
+            }
+            subsets.add(subset);
+        }
+        return subsets;
+    }
+    public String[] getVertexData() {
+        return vertexData;
+    }
+    
+    // 5. Euler characteristic method
+    public void euler() {
+        int V = size;
+        int E = 0;
+        for (int i = 0; i < size; i++) {
+            for (int j = i + 1; j < size; j++) {
+                if (adjMatrix[i][j] == 1) E++;
+            }
+        }
+        int F = 1 + E - V; // Only for planar graphs
+        System.out.println("Euler Characteristic χ = V - E + F = " + V + " - " + E + " + " + F + " = " + (V - E + F));
+    }
+}
