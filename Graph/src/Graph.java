@@ -123,4 +123,39 @@ class Graph {
         int F = 1 + E - V; // Only for planar graphs
         System.out.println("Euler Characteristic χ = V - E + F = " + V + " - " + E + " + " + F + " = " + (V - E + F));
     }
+
+    // Returns the number of vertices in the graph
+public int getSize() {
+    return size;
+}
+
+// Returns the data associated with a vertex
+public String getVertexData(int index) {
+    if (index >= 0 && index < size) {
+        return vertexData[index];
+    }
+    return null;
+}
+
+// Checks if there is an edge between two vertices
+public boolean isEdge(int u, int v) {
+    if (isWeighted) {
+        return weightMatrix[u][v] > 0;
+    } else {
+        return adjMatrix[u][v] == 1;
+    }
+}
+
+// Returns the weight of an edge (for weighted graphs)
+public int getEdgeWeight(int u, int v) {
+    if (isWeighted) {
+        return weightMatrix[u][v];
+    }
+    return 0;
+}
+
+// Checks if the graph is weighted
+public boolean isWeighted() {
+    return isWeighted;
+}
 }

@@ -133,17 +133,17 @@ public class App {
             System.out.println("No graphs available to perform operations on.");
             return;
         }
-
+    
         System.out.print("Enter graph number to operate on (0 to " + (graphs.size() - 1) + "): ");
         int index = Integer.parseInt(scan.nextLine());
-
+    
         if (index < 0 || index >= graphs.size()) {
             System.out.println("Invalid graph index.");
             return;
         }
-
+    
         Graph g = graphs.get(index);
-
+    
         while (true) {
             System.out.println("\n--- Graph Operations Menu (Graph #" + index + ") ---");
             System.out.println("1. Print Graph");
@@ -151,10 +151,11 @@ public class App {
             System.out.println("3. Degree Sequence");
             System.out.println("4. Euler Characteristic");
             System.out.println("5. Power Set with n-simplex");
-            System.out.println("6. Back to Main Menu");
+            System.out.println("6. Visualize Graph");
+            System.out.println("7. Back to Main Menu");
             System.out.print("Choose an operation: ");
             String op = scan.nextLine();
-
+    
             switch (op) {
                 case "1":
                     g.printGraph();
@@ -174,6 +175,9 @@ public class App {
                     System.out.println("No operations for Power Set in this version.");
                     break;
                 case "6":
+                    GraphVisualizerApp.visualizeGraph(g); // Visualize the selected graph
+                    break;
+                case "7":
                     return;
                 default:
                     System.out.println("Invalid option.");
