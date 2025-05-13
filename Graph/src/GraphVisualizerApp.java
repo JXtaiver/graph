@@ -1,14 +1,16 @@
 import javax.swing.*;
 
 public class GraphVisualizerApp {
+    
     public static void visualizeGraph(Graph graph) {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Graph Visualizer");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setSize(800, 800);
             frame.add(new GraphPanel(graph));
             frame.setVisible(true);
         });
+
     }
 
     public static void main(String[] args) {
@@ -27,5 +29,6 @@ public class GraphVisualizerApp {
         graph.addEdge(4, 0, 1);
 
         visualizeGraph(graph); // Visualize the sample graph
+        
     }
 }
